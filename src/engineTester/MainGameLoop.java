@@ -8,12 +8,11 @@ import entities.Entity;
 import entities.Light;
 import models.RawModel;
 import models.TexturedModel;
+import objConverter.ModelData;
+import objConverter.OBJFileLoader;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
-import renderEngine.OBJLoader;
-import renderEngine.EntityRenderer;
-import shaders.StaticShader;
 import terrains.Terrain;
 import textures.ModelTexture;
 
@@ -26,7 +25,8 @@ public class MainGameLoop {
 		
 		Loader loader = new Loader();
 		
-		RawModel model = OBJLoader.loadObjModel("dragon", loader);
+		ModelData data = OBJFileLoader.loadOBJ("dragon");
+		RawModel model = loader.loadToVAO(data.getVertices(), data.getTextureCoords(), data.getNormals(), data.getIndices());
 		TexturedModel staticModel = new TexturedModel(model, new ModelTexture(loader.loadTexture("white")));
 		ModelTexture texture = staticModel.getTexture();
 		texture.setShineDamper(10);
@@ -42,7 +42,8 @@ public class MainGameLoop {
 		camera.setPosition(new Vector3f(0.0f, 5.0f, 0.0f));
 		MasterRenderer renderer = new MasterRenderer();
 		
-		RawModel fernModel = OBJLoader.loadObjModel("fern", loader);
+		ModelData fernModelData = OBJFileLoader.loadOBJ("fern");
+		RawModel fernModel = loader.loadToVAO(fernModelData.getVertices(), fernModelData.getTextureCoords(), fernModelData.getNormals(), fernModelData.getIndices());
 		TexturedModel fernStaticModel = new TexturedModel(fernModel, new ModelTexture(loader.loadTexture("fern")));
 		ModelTexture fernTexture = fernStaticModel.getTexture();
 		fernTexture.setHasTransparency(true);
