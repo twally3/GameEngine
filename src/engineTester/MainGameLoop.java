@@ -32,17 +32,27 @@ public class MainGameLoop {
 		texture.setShineDamper(10);
 		texture.setReflectivitiy(1);
 		
-		Entity entity = new Entity(staticModel, new Vector3f(0, 0, -25), 0, 0, 0, 1);
+		Entity entity = new Entity(staticModel, new Vector3f(50, 0, -50), 0, 0, 0, 1);
 		Light light = new Light(new Vector3f(300, 2000, 2000), new Vector3f(1,1,1));;
 		
-		Terrain terrain = new Terrain(0, 0, loader, new ModelTexture(loader.loadTexture("grass")));
-		Terrain terrain2 = new Terrain(1, 0, loader, new ModelTexture(loader.loadTexture("grass")));
+		Terrain terrain = new Terrain(0, -1, loader, new ModelTexture(loader.loadTexture("grass")));
+		Terrain terrain2 = new Terrain(1, -1, loader, new ModelTexture(loader.loadTexture("grass")));
 		
 		Camera camera = new Camera();
+		camera.setPosition(new Vector3f(0.0f, 5.0f, 0.0f));
 		MasterRenderer renderer = new MasterRenderer();
 		
-//		camera.setPosition(new Vector3f(0, 10, 0));
-//		camera.setYaw(200);
+		RawModel fernModel = OBJLoader.loadObjModel("fern", loader);
+		TexturedModel fernStaticModel = new TexturedModel(fernModel, new ModelTexture(loader.loadTexture("fern")));
+		ModelTexture fernTexture = fernStaticModel.getTexture();
+		fernTexture.setHasTransparency(true);
+		fernTexture.setUseFakeLighting(true);
+		
+		Entity[] fernEntities = new Entity[400];
+		
+		for (int i = 0; i < fernEntities.length; i++) {
+			fernEntities[i] = new Entity(fernStaticModel, new Vector3f((float) Math.random() * 1600, 0, (float) Math.random() * -800), 0, 0, 0, 1); 
+		}
 		
 		while(!Display.isCloseRequested()) {
 			entity.increaseRotation(0, 1, 0);
@@ -50,6 +60,11 @@ public class MainGameLoop {
 			renderer.processTerrain(terrain);
 			renderer.processTerrain(terrain2);
 			renderer.processEntity(entity);
+			
+			for (Entity fernEntity : fernEntities) {
+				renderer.processEntity(fernEntity);
+			}
+			
 			renderer.render(light, camera);
 			DisplayManager.updateDisplay();
 		}
